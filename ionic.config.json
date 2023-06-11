@@ -1,0 +1,7 @@
+{
+  "name": "Cross Habit",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
