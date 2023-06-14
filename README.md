@@ -5,7 +5,7 @@ A open source cross platform habit tracker.
 ## Features
 
 - Habit - trak your daily, weekly, monthly, or any routine habit.
-- Reminders - notification or alarm your habit and task.
+- Reminders - notification your habit and task.
 - Statistic - track your habit statistics and goal.
 - Schedules - flixible schedules.
 - Time range - set start and end time of the routine habbit for example if you sleep at 3am can set the new day start at 3am insted of midnight.
@@ -25,32 +25,36 @@ erDiagram
         string name "name of the habbit"
         string description "description or note"
         string type "habbit type"
-        category[] categories "categories of the habbit"
+        string[] tagNames "tags of the habbit"
         int priority  "lower is more, put to top of the list"
-        Task[] tasks "tasks of the habbit"
+        Schedule[] schedules  "one habit can have multiple schedules"
+        <!-- Task[] tasks "tasks of the habbit" -->
+    }
+    Tag {
+        string name "tag name"
+        string color "color of the tag"
     }
     Schedule {
         string[] days "days list of week"
         cron startCron ""
         cron endCron ""
     }
-    Reminder {
-        time time "time for the reminder"
-        string reminderType "notification|alarm"
-    }
     Task {
         string id
-        time startedAt "started time"
-        time expiredAt "expired time by skip or failed"
-        time successAt "time when the task success"
-        string status "success|skip|failed"
+        string habitID "habit id"
+        datetime startedAt "started time"
+        datetime expiredAt "expired time by skiped or failed"
+        datetime successAt "time when the task success"
+        string status "success|skiped|expired"
+        string notificationID "notification id"
     }
 ```
 
+Local Notifications: https://capacitorjs.com/docs/apis/local-notifications
+
 ## Development
 
-
-## Links 
+## Links
 
 ### Background
 
