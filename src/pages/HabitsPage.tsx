@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
-import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import React from 'react';
+import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonTitle, IonToolbar } from '@ionic/react';
 
 import { add } from 'ionicons/icons';
 import NewHabitModal from '../components/NewHabitModal';
 import { PageProps } from './PageProps';
 
-const HabitsPage: React.FC<PageProps> = ({ pageRef }) => {
+const HabitsPage: React.FC<PageProps> = ({pageRef}) => {
 	return (<>
 		<IonHeader>
 			<IonToolbar>
@@ -18,7 +18,7 @@ const HabitsPage: React.FC<PageProps> = ({ pageRef }) => {
 					<IonIcon icon={add}></IonIcon>
 				</IonFabButton>
 			</IonFab>
-			<NewHabitModal pageRef={pageRef} modalID='new-habbit-modal'></NewHabitModal>
+			<NewHabitModal modalID='new-habbit-modal' pageRef={pageRef}></NewHabitModal>
 
 			<div
 				style={{

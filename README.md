@@ -20,28 +20,31 @@ A open source cross platform habit tracker.
 title: Cross Habit
 ---
 erDiagram
-    Habbit {
+    Habbits {
         string id
         string name "name of the habbit"
         string description "description or note"
-        string type "habbit type"
-        string[] tagNames "tags of the habbit"
         int priority  "lower is more, put to top of the list"
-        Schedule[] schedules  "one habit can have multiple schedules"
-        <!-- Task[] tasks "tasks of the habbit" -->
     }
-    Tag {
+    Tags {
+        string id
         string name "tag name"
         string color "color of the tag"
     }
-    Schedule {
+    HabbitTags {
+        string habitID
+        string tagID
+    }
+    Schedules {
+        string id
+        string habitID "one habit can have multiple schedules"
         string[] days "days list of week"
         cron startCron ""
         cron endCron ""
     }
-    Task {
+    Tasks {
         string id
-        string habitID "habit id"
+        string habitID "one habbit can have multiple tasks"
         datetime startedAt "started time"
         datetime expiredAt "expired time by skiped or failed"
         datetime successAt "time when the task success"

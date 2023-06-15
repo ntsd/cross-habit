@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonTitle, IonToolbar, useIonActionSheet } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonInput, IonItem, IonList, IonModal, IonTitle, IonToolbar, useIonActionSheet } from '@ionic/react';
 
 interface NewHabitModalProps {
 	pageRef: React.MutableRefObject<null>,
@@ -14,18 +14,16 @@ const NewHabitModal: React.FC<NewHabitModalProps> = ({ pageRef, modalID }) => {
 
 	useEffect(() => {
 		setPresentingElement(pageRef.current);
-	}, []);
+	}, [pageRef]);
 
 	function dismiss() {
-		console.log('dismiss');
 		modal.current?.dismiss();
 	}
 
 	function canDismiss() {
 		return new Promise<boolean>((resolve, reject) => {
-			console.log('canDismiss');
 			present({
-				header: 'Are you sure?',
+				header: 'Quit without saving?',
 				buttons: [
 					{
 						text: 'Yes',
@@ -40,7 +38,7 @@ const NewHabitModal: React.FC<NewHabitModalProps> = ({ pageRef, modalID }) => {
 					if (ev.detail.role === 'confirm') {
 						resolve(true);
 					} else {
-						reject();
+						resolve(false);
 					}
 				},
 			});
@@ -51,17 +49,21 @@ const NewHabitModal: React.FC<NewHabitModalProps> = ({ pageRef, modalID }) => {
 		<IonModal ref={modal} trigger={modalID} canDismiss={canDismiss} presentingElement={presentingElement!} >
 			<IonHeader>
 				<IonToolbar>
-					<IonTitle>Modal</IonTitle>
+					<IonTitle>New Habit</IonTitle>
 					<IonButtons slot="end">
-						<IonButton onClick={() => {
-							console.log("test");
-							dismiss();
-						}}>Close</IonButton>
+						<IonButton onClick={() => dismiss()}>Close</IonButton>
 					</IonButtons>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent className="ion-padding">
-				<p>You will be prompted when closing this modal.</p>
+			<IonContent className="ion-padding" style={{height: '100vh'}}>
+				<IonList>
+					<IonItem>
+						<IonInput label="Name"></IonInput>
+					</IonItem>
+					<IonItem>
+						<IonInput label="Description"></IonInput>
+					</IonItem>
+				</IonList>
 			</IonContent>
 		</IonModal>
 	);

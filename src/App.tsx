@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonPage } from '@ionic/react';
+import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonPage, IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import { Route } from 'react-router';
+import { Redirect, Route } from 'react-router';
 
 import { checkbox, accessibility, cog } from 'ionicons/icons';
 
@@ -11,7 +11,7 @@ import HabitsPage from './pages/HabitsPage';
 import SettingPage from './pages/SettingPage';
 import { PageProps } from './pages/PageProps';
 
-const pages: { title: string, component: React.FC<PageProps>, path: string, icon: string }[] = [
+const tabs: { title: string, component: React.FC<PageProps>, path: string, icon: string }[] = [
 	{
 		title: "Tasks",
 		component: TasksPage,
@@ -36,29 +36,32 @@ const App: React.FC = () => {
 	const pageRef = useRef(null);
 
 	return (
-		<IonPage ref={pageRef}>
-			<IonReactRouter>
-				<IonTabs>
-					<IonRouterOutlet>
-						{
-							pages.map(page =>
-								<Route path={`/${page.path}`} render={() => <page.component pageRef={pageRef} />} key={page.path} />
-							)
-						}
-					</IonRouterOutlet>
+		<IonApp>
+			<IonPage ref={pageRef}>
+				<IonReactRouter>
+					<IonTabs>
+						<IonRouterOutlet>
+							<Redirect exact path="/" to="/tasks" />
+							{
+								tabs.map(tab =>
+									<Route path={`/${tab.path}`} render={() => <tab.component pageRef={pageRef} />} key={tab.path} exact />
+								)
+							}
+						</IonRouterOutlet>
 
-					<IonTabBar slot="bottom">
-						{
-							pages.map(page =>
-								<IonTabButton tab={page.path} href={`/${page.path}`} key={page.path} >
-									<IonIcon icon={page.icon} />
-									<IonLabel>{page.title}</IonLabel>
-								</IonTabButton>)
-						}
-					</IonTabBar>
-				</IonTabs>
-			</IonReactRouter>
-		</IonPage>
+						<IonTabBar slot="bottom">
+							{
+								tabs.map(tab =>
+									<IonTabButton tab={tab.path} href={`/${tab.path}`} key={tab.path} >
+										<IonIcon icon={tab.icon} />
+										<IonLabel>{tab.title}</IonLabel>
+									</IonTabButton>)
+							}
+						</IonTabBar>
+					</IonTabs>
+				</IonReactRouter>
+			</IonPage>
+		</IonApp>
 	);
 }
 export default App;
