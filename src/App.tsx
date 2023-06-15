@@ -10,6 +10,8 @@ import TasksPage from './pages/TasksPage';
 import HabitsPage from './pages/HabitsPage';
 import SettingPage from './pages/SettingPage';
 import { PageProps } from './pages/PageProps';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { RecoilRoot } from 'recoil';
 
 const tabs: { title: string, component: React.FC<PageProps>, path: string, icon: string }[] = [
 	{
@@ -35,33 +37,46 @@ const tabs: { title: string, component: React.FC<PageProps>, path: string, icon:
 const App: React.FC = () => {
 	const pageRef = useRef(null);
 
-	return (
-		<IonApp>
-			<IonPage ref={pageRef}>
-				<IonReactRouter>
-					<IonTabs>
-						<IonRouterOutlet>
-							<Redirect exact path="/" to="/tasks" />
-							{
-								tabs.map(tab =>
-									<Route path={`/${tab.path}`} render={() => <tab.component pageRef={pageRef} />} key={tab.path} exact />
-								)
-							}
-						</IonRouterOutlet>
+	LocalNotifications.requestPermissions()
+	LocalNotifications.registerActionTypes({
+		types: [{
+			id: '',
+			actions: [{
+				id: '',
+				title: ''
+			}]
+		}]
+	})
 
-						<IonTabBar slot="bottom">
-							{
-								tabs.map(tab =>
-									<IonTabButton tab={tab.path} href={`/${tab.path}`} key={tab.path} >
-										<IonIcon icon={tab.icon} />
-										<IonLabel>{tab.title}</IonLabel>
-									</IonTabButton>)
-							}
-						</IonTabBar>
-					</IonTabs>
-				</IonReactRouter>
-			</IonPage>
-		</IonApp>
+	return (
+		<RecoilRoot>
+			<IonApp>
+				<IonPage ref={pageRef}>
+					<IonReactRouter>
+						<IonTabs>
+							<IonRouterOutlet>
+								<Redirect exact path="/" to="/tasks" />
+								{
+									tabs.map(tab =>
+										<Route path={`/${tab.path}`} render={() => <tab.component pageRef={pageRef} />} key={tab.path} exact />
+									)
+								}
+							</IonRouterOutlet>
+
+							<IonTabBar slot="bottom">
+								{
+									tabs.map(tab =>
+										<IonTabButton tab={tab.path} href={`/${tab.path}`} key={tab.path} >
+											<IonIcon icon={tab.icon} />
+											<IonLabel>{tab.title}</IonLabel>
+										</IonTabButton>)
+								}
+							</IonTabBar>
+						</IonTabs>
+					</IonReactRouter>
+				</IonPage>
+			</IonApp>
+		</RecoilRoot>
 	);
 }
 export default App;

@@ -43,13 +43,14 @@ erDiagram
         cron endCron ""
     }
     Tasks {
-        string id
+        number id "task and notification id"
         string habitID "one habbit can have multiple tasks"
-        datetime startedAt "started time"
-        datetime expiredAt "expired time by skiped or failed"
+        datetime startTime "the started time"
+        datetime endTime "the ended time"
+        datetime skipedAt "time when the task skiped"
+        datetime failedAt "time when the task failed"
         datetime successAt "time when the task success"
-        string status "success|skiped|expired"
-        string notificationID "notification id"
+        string status "success|skiped|failed"
     }
 ```
 

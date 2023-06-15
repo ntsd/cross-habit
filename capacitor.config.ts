@@ -27,6 +27,9 @@ const config: CapacitorConfig = {
       electronMacLocation: "/Volumes/Development_Lacie/Development/Databases",
       electronLinuxLocation: "Databases",
     },
+    LocalNotifications: {
+      iconColor: "#488AFF",
+    },
   },
 };
 
