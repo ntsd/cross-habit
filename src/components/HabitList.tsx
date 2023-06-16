@@ -1,24 +1,19 @@
 import React from 'react';
 import { IonItem, IonLabel, IonList } from '@ionic/react';
+import { useRecoilState } from 'recoil';
+import { habitsState } from '../stores/habitStore';
+import { Habit } from '../types';
 
 const HabitList: React.FC = () => {
+	const [habits, _] = useRecoilState(habitsState)
+
 	return (
 		<IonList>
-			<IonItem>
-				<IonLabel>Pokémon Yellow</IonLabel>
-			</IonItem>
-			<IonItem>
-				<IonLabel>Mega Man X</IonLabel>
-			</IonItem>
-			<IonItem>
-				<IonLabel>The Legend of Zelda</IonLabel>
-			</IonItem>
-			<IonItem>
-				<IonLabel>Pac-Man</IonLabel>
-			</IonItem>
-			<IonItem>
-				<IonLabel>Super Mario World</IonLabel>
-			</IonItem>
+			{
+				Object.values(habits).map((habit: Habit) => <IonItem key={habit.id}>
+					<IonLabel>{habit.name}</IonLabel>
+				</IonItem>)
+			}
 		</IonList>
 	);
 }

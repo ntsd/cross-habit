@@ -4,6 +4,7 @@ import { Habit } from '../types';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRecoilState } from 'recoil';
 import { habitsState } from '../stores/habitStore';
+import { v4 as uuid } from 'uuid';
 
 interface NewHabitModalProps {
 	pageRef: React.MutableRefObject<null>,
@@ -59,11 +60,13 @@ const NewHabitModal: React.FC<NewHabitModalProps> = ({ pageRef, modalID }) => {
 
 	const onSubmit: SubmitHandler<NewHabitInput> = (data) => {
 		const newHabit: Habit = {
+			id: uuid(),
 			name: data.name,
 			description: data.description,
 			priority: 1
 		}
-		setHabits(habits.set('', newHabit))
+
+		setHabits({ ...habits, [newHabit.id]: newHabit });
 	}
 
 	return (

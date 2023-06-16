@@ -26,8 +26,8 @@ const persistentStorageEffect = (key: string): AtomEffect<any> => {
   };
 };
 
-export const habitsState = atom<Map<string, Habit>>({
+export const habitsState = atom<{ [key: string]: Habit }>({
   key: "habits",
-  default: new Map<string, Habit>(),
+  default: {},
   effects: [persistentStorageEffect("habits")],
 });

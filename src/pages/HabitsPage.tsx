@@ -4,8 +4,9 @@ import { IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonTitle, IonTool
 import { add } from 'ionicons/icons';
 import NewHabitModal from '../components/NewHabitModal';
 import { PageProps } from './PageProps';
+import HabitList from '../components/HabitList';
 
-const HabitsPage: React.FC<PageProps> = ({pageRef}) => {
+const HabitsPage: React.FC<PageProps> = ({ pageRef }) => {
 	return (<>
 		<IonHeader>
 			<IonToolbar>
@@ -20,16 +21,7 @@ const HabitsPage: React.FC<PageProps> = ({pageRef}) => {
 			</IonFab>
 			<NewHabitModal modalID='new-habbit-modal' pageRef={pageRef}></NewHabitModal>
 
-			<div
-				style={{
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					height: '100%',
-				}}
-			>
-				Habit
-			</div>
+			<HabitList />
 		</IonContent>
 	</>);
 };
