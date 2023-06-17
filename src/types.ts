@@ -1,10 +1,17 @@
+import { Schedule } from "@capacitor/local-notifications";
+
 export interface Habit {
   id: string;
-  name: string;
+  title: string;
   description: string;
   priority: number;
+  schedules: HabitSchedule[];
+  tags: string[];
 }
 
-export interface Schedule {}
+export interface HabitSchedule extends Schedule {}
 
-export interface Tag {}
+export interface Tag {
+  name: string;
+  color: string;
+}

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonPage, IonApp } from '@ionic/react';
+import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel, IonRouterOutlet, IonPage, IonApp, isPlatform } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 import { Redirect, Route } from 'react-router';
@@ -35,30 +35,39 @@ const tabs: { title: string, component: React.FC<PageProps>, path: string, icon:
 ]
 
 const App: React.FC = () => {
-	const pageRef = useRef(null);
-
 	LocalNotifications.requestPermissions()
-	LocalNotifications.registerActionTypes({
-		types: [{
-			id: '',
-			actions: [{
+
+	if (isPlatform('mobile')) {
+		LocalNotifications.registerActionTypes({
+			types: [{
 				id: '',
-				title: ''
+				actions: [{
+					id: '',
+					title: ''
+				}]
 			}]
+		})
+	}
+	LocalNotifications.schedule({
+		notifications: [{
+			id: 1,
+			body: '',
+			title: '',
+			schedule: {}
 		}]
 	})
 
 	return (
 		<RecoilRoot>
 			<IonApp>
-				<IonPage ref={pageRef}>
+				<IonPage>
 					<IonReactRouter>
 						<IonTabs>
 							<IonRouterOutlet>
 								<Redirect exact path="/" to="/tasks" />
 								{
 									tabs.map(tab =>
-										<Route path={`/${tab.path}`} render={() => <tab.component pageRef={pageRef} />} key={tab.path} exact />
+										<Route path={`/${tab.path}`} render={() => <tab.component />} key={tab.path} exact />
 									)
 								}
 							</IonRouterOutlet>

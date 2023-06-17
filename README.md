@@ -4,14 +4,14 @@ A open source cross platform habit tracker.
 
 ## Features
 
-- Habit - trak your daily, weekly, monthly, or any routine habit.
-- Reminders - notification your habit and task.
-- Statistic - track your habit statistics and goal.
-- Schedules - flixible schedules.
-- Time range - set start and end time of the routine habbit for example if you sleep at 3am can set the new day start at 3am insted of midnight.
-- Open source - no advertisements and open source.
-- Cloud sync - login to your Google account to sync your habbit and task.
-- Auto Start and background - start when turn on the phone and keep it running on background.
+- Habit - Track your daily, weekly, monthly, or any routine habit.
+- Reminders - Notification your habit and task.
+- Statistic - Track your habit statistics and goal.
+- Schedules - Flixible schedules.
+- Open source - No advertisements and open source.
+- Cloud sync - Login to your Google account to sync your habbit and task.
+- Sync with Google Calendar - Sync you routine with Google calendar.
+- Auto Start and background - Start when turn on the phone and keep it running on background.
 
 ## Diagram
 

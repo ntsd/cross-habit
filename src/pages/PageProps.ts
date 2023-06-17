@@ -1,3 +1,1 @@
-export interface PageProps {
-  pageRef: React.MutableRefObject<null>;
-}
+export interface PageProps {}
