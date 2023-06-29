@@ -53,8 +53,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
     },
   };
 
-  console.log("defaultSchedule", defaultSchedule);
-
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: defaultSchedule,
   });
@@ -66,7 +64,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   const onSave: SubmitHandler<FieldArrayWithId<Habit, "schedules", "id">> = (
     data
   ) => {
-    console.log("onSave", data);
     if (update && index !== undefined) {
       update(index, data);
     }
@@ -105,7 +102,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="ion-padding" class="h-screen">
+        <IonContent className="h-screen">
           <IonList>
             <IonItem lines="inset">
               <IonSelect

@@ -1,8 +1,8 @@
 import { Preferences } from "@capacitor/preferences";
 import { AtomEffect, atom } from "recoil";
-import type { Habit } from "../types";
+import type { Habits } from "../types";
 
-const persistentStorageEffect = (key: string): AtomEffect<any> => {
+const persistentStorageEffect = <T>(key: string): AtomEffect<T> => {
   return ({ setSelf, onSet, trigger }) => {
     const loadPersisted = async () => {
       const getResult = await Preferences.get({ key });
@@ -26,8 +26,8 @@ const persistentStorageEffect = (key: string): AtomEffect<any> => {
   };
 };
 
-export const habitsState = atom<{ [key: string]: Habit }>({
+export const habitsState = atom<Habits>({
   key: "habits",
   default: {},
-  effects: [persistentStorageEffect("habits")],
+  effects: [persistentStorageEffect<Habits>("habits")],
 });

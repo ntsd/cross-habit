@@ -21,6 +21,8 @@ import { v4 as uuid } from "uuid";
 import ScheduleModal from "./ScheduleModal";
 import { monthsMap, scheduleEveryList, weekDaysMap } from "../consts";
 import { Weekday } from "@capacitor/local-notifications";
+import { timeFormat } from "../utils/time";
+import { addNotification } from "../lib/localnotification";
 
 interface HabitModalProps {
   habit?: Habit;
@@ -57,7 +59,6 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
   const [present] = useIonActionSheet();
 
   const onSubmit: SubmitHandler<Habit> = (data) => {
-    console.log("onSubmit", data);
     const newHabit: Habit = {
       id: data.id,
       title: data.title,
@@ -74,6 +75,10 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
     }
 
     setIsOpen(false);
+
+    console.log("add notifications");
+
+    addNotification().then((result) => console.log(result));
   };
 
   const deleteHabit = () => {
@@ -127,7 +132,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
               </IonButtons>
             </IonToolbar>
           </IonHeader>
-          <IonContent className="ion-padding" class="h-screen">
+          <IonContent className="h-screen">
             <IonList>
               <IonItem lines="inset">
                 <IonInput
@@ -163,7 +168,8 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                       )}
                       {schedule.every === "day" && (
                         <div>
-                          On {schedule.on?.hour}:{schedule.on?.minute}
+                          On{" "}
+                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}
                         </div>
                       )}
                       {schedule.every === "week" && (
@@ -174,17 +180,15 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                               weekDaysMap[k as keyof typeof weekDaysMap] ===
                               schedule.on?.weekday
                             );
-                          })}
-                          {" Time "}
-                          {schedule.on?.hour}:{schedule.on?.minute}{" "}
+                          })}{" "}
+                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
                         </div>
                       )}
                       {(schedule.every === "two-weeks" ||
                         schedule.every === "month") && (
                         <div>
-                          On Day {schedule.on?.day}
-                          {" Time 	"}
-                          {schedule.on?.hour}:{schedule.on?.minute}{" "}
+                          On Day {schedule.on?.day}{" "}
+                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
                         </div>
                       )}
                       {schedule.every === "year" && (
@@ -196,9 +200,8 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                               schedule.on?.month
                             );
                           })}{" "}
-                          Day {schedule.on?.day}
-                          {" Time 	"}
-                          {schedule.on?.hour}:{schedule.on?.minute}{" "}
+                          Day {schedule.on?.day}{" "}
+                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
                         </div>
                       )}
                     </div>
@@ -211,6 +214,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                     onClick={() => {
                       deleteHabit();
                     }}
+                    color="danger"
                   >
                     Delete
                   </IonButton>

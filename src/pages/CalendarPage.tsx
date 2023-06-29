@@ -2,11 +2,11 @@ import React from "react";
 import { IonContent, IonHeader, IonPage, IonSearchbar, IonTitle, IonToolbar } from "@ionic/react";
 import { PageProps } from "./PageProps";
 
-const TasksPage: React.FC<PageProps> = () => (
+const CalendarPage: React.FC<PageProps> = () => (
   <IonPage>
     <IonHeader>
       <IonToolbar>
-        <IonTitle>Tasks</IonTitle>
+        <IonTitle>Calendar</IonTitle>
       </IonToolbar>
     </IonHeader>
     <IonContent>
@@ -14,4 +14,4 @@ const TasksPage: React.FC<PageProps> = () => (
   </IonPage>
 );
 
-export default TasksPage;
+export default CalendarPage;

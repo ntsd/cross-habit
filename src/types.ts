@@ -1,6 +1,4 @@
-import {
-  Schedule,
-} from "@capacitor/local-notifications";
+import { Schedule } from "@capacitor/local-notifications";
 
 export interface Habit {
   id: string;
@@ -9,10 +7,18 @@ export interface Habit {
   priority: number;
   schedules: HabitSchedule[];
   tags: string[];
-	notificationSound?: string;
+  notificationSound?: string;
 }
 
-export interface HabitSchedule extends Schedule {}
+export type Habits = { [key: string]: Habit };
+
+export interface Task {
+  notificationId: number;
+}
+
+export interface HabitSchedule extends Schedule {
+  id: number;
+}
 
 export interface Tag {
   name: string;

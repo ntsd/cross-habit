@@ -1,10 +1,13 @@
 import React from "react";
 import {
+  IonButton,
+  IonButtons,
   IonContent,
   IonFab,
   IonFabButton,
   IonHeader,
   IonIcon,
+  IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -16,23 +19,23 @@ import HabitList from "../components/HabitList";
 
 const HabitsPage: React.FC<PageProps> = () => {
   return (
-    <>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Habits</IonTitle>
+          <IonButtons slot="end">
+            <HabitModal>
+              <IonButton strong={true} type="submit">
+                New
+              </IonButton>
+            </HabitModal>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonFab slot="fixed" vertical="top" horizontal="end" edge={true}>
-          <HabitModal>
-            <IonFabButton>
-              <IonIcon icon={add}></IonIcon>
-            </IonFabButton>
-          </HabitModal>
-        </IonFab>
         <HabitList />
       </IonContent>
-    </>
+    </IonPage>
   );
 };
 
