@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { IonButton, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonLabel, IonList } from "@ionic/react";
+import {
+  IonButton,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonLabel,
+  IonList,
+  useIonActionSheet,
+} from "@ionic/react";
 import { useRecoilState } from "recoil";
 import { habitsState } from "../stores/habitStore";
 import { Habit } from "../types";
@@ -10,6 +19,35 @@ interface HabitItemProps {
 }
 
 const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
+  const [present] = useIonActionSheet();
+  const [habits, setHabits] = useRecoilState(habitsState);
+
+  const deleteHabit = () => {
+    present({
+      buttons: [
+        {
+          text: "Delete",
+          role: "confirm",
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+      onWillDismiss: (ev) => {
+        if (ev.detail.role === "confirm") {
+          if (habit) {
+            setHabits((habits) => {
+              const copy = { ...habits };
+              delete copy[habit.id];
+              return copy;
+            });
+          }
+        }
+      },
+    });
+  };
+
   return (
     <IonItemSliding>
       <HabitModal habit={habit}>
@@ -22,7 +60,9 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
       </HabitModal>
 
       <IonItemOptions>
-        <IonItemOption>Delete</IonItemOption>
+        <IonItemOption onClick={deleteHabit} color={"danger"}>
+          Delete
+        </IonItemOption>
       </IonItemOptions>
     </IonItemSliding>
   );

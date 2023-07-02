@@ -13,11 +13,12 @@ export interface Habit {
 export type Habits = { [key: string]: Habit };
 
 export interface Task {
-  notificationId: number;
+  notificationId?: number;
 }
 
 export interface HabitSchedule extends Schedule {
-  id: number;
+	id: string;
+  notificationId?: number;
 }
 
 export interface Tag {

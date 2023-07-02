@@ -78,7 +78,9 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
 
     console.log("add notifications");
 
-    addNotification().then((result) => console.log(result));
+		newHabit.schedules.forEach(schedules => {
+			addNotification(schedules).then((result) => console.log(result));
+		})
   };
 
   const deleteHabit = () => {
@@ -164,7 +166,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                     <div className="flex gap-2">
                       <div>Every {schedule.every}</div>
                       {schedule.every === "hour" && (
-                        <div>At Minute {schedule.on?.minute}</div>
+                        <div>On Minute {schedule.on?.minute}</div>
                       )}
                       {schedule.every === "day" && (
                         <div>

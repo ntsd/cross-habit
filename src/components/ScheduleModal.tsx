@@ -23,6 +23,7 @@ import {
 } from "react-hook-form";
 import { Habit } from "../types";
 import { monthsMap, scheduleEveryList, weekDaysMap } from "../consts";
+import { v4 as uuid } from "uuid";
 
 interface ScheduleModalProps {
   children: JSX.Element;
@@ -42,6 +43,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   append,
 }) => {
   const defaultSchedule = value || {
+		id: uuid(),
     every: "hour",
     on: {
       month: 1,
@@ -51,6 +53,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       minute: 0,
       second: 0,
     },
+		repeats: true,
   };
 
   const { register, handleSubmit, setValue } = useForm({
