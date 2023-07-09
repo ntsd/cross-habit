@@ -18,12 +18,16 @@ import {
   FieldArrayWithId,
   SubmitHandler,
   UseFieldArrayAppend,
+  UseFieldArrayRemove,
   UseFieldArrayUpdate,
   useForm,
 } from "react-hook-form";
 import { Habit } from "../types";
 import { monthsMap, scheduleEveryList, weekDaysMap } from "../consts";
 import { v4 as uuid } from "uuid";
+import { randSeedRange } from "../utils/randseed";
+import { Cron } from "react-js-cron";
+import 'react-js-cron/dist/styles.css'
 
 interface ScheduleModalProps {
   children: JSX.Element;
@@ -31,8 +35,8 @@ interface ScheduleModalProps {
   index?: number;
   value?: FieldArrayWithId<Habit, "schedules", "id">;
   update?: UseFieldArrayUpdate<Habit, "schedules">;
-
   append?: UseFieldArrayAppend<Habit, "schedules">;
+  remove?: UseFieldArrayRemove;
 }
 
 const ScheduleModal: React.FC<ScheduleModalProps> = ({
@@ -41,19 +45,24 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   value,
   update,
   append,
+  remove,
 }) => {
+  const [cron, setCron] = useState("0 * * * *");
+
+  const id = uuid();
   const defaultSchedule = value || {
-		id: uuid(),
+    id: id,
+    notificationId: randSeedRange(id, -2147483647, 2147483647),
     every: "hour",
     on: {
       month: 1,
-			weekday: 1,
+      weekday: 1,
       day: 1,
       hour: 0,
       minute: 0,
       second: 0,
     },
-		repeats: true,
+    repeats: true,
   };
 
   const { register, handleSubmit, setValue } = useForm({
@@ -62,7 +71,9 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [scheduleEvery, setScheduleEvery] = useState(defaultSchedule.every || "hour");
+  const [scheduleEvery, setScheduleEvery] = useState(
+    defaultSchedule.every || "hour"
+  );
 
   const onSave: SubmitHandler<FieldArrayWithId<Habit, "schedules", "id">> = (
     data
@@ -75,6 +86,13 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       append(data);
     }
 
+    setIsOpen(false);
+  };
+
+  const deleteSchedule = () => {
+    if (remove) {
+      remove(index);
+    }
     setIsOpen(false);
   };
 
@@ -131,10 +149,10 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 <IonSelect
                   label="Month"
                   interface="popover"
-									{...register(`on.month`, {
+                  {...register(`on.month`, {
                     max: 12,
                     min: 1,
-										valueAsNumber: true
+                    valueAsNumber: true,
                   })}
                 >
                   {Object.entries(monthsMap).map((month, index) => (
@@ -156,7 +174,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                   {...register(`on.day`, {
                     max: 31,
                     min: 1,
-										valueAsNumber: true
+                    valueAsNumber: true,
                   })}
                 />
               </IonItem>
@@ -166,10 +184,10 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 <IonSelect
                   label="Weekday"
                   interface="popover"
-									{...register(`on.weekday`, {
-                    max: 7,
-                    min: 1,
-										valueAsNumber: true
+                  {...register(`on.weekday`, {
+                    max: 6,
+                    min: 0,
+                    valueAsNumber: true,
                   })}
                 >
                   {Object.entries(weekDaysMap).map((day, index) => (
@@ -191,7 +209,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                   {...register(`on.hour`, {
                     max: 23,
                     min: 0,
-										valueAsNumber: true
+                    valueAsNumber: true,
                   })}
                 />
               </IonItem>
@@ -206,9 +224,24 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 {...register(`on.minute`, {
                   max: 59,
                   min: 0,
-									valueAsNumber: true
+                  valueAsNumber: true,
                 })}
               />
+            </IonItem>
+            {value && (
+              <IonItem lines="none">
+                <IonButton
+                  onClick={() => {
+                    deleteSchedule();
+                  }}
+                  color="danger"
+                >
+                  Delete
+                </IonButton>
+              </IonItem>
+            )}
+            <IonItem>
+              <Cron value={cron} setValue={setCron} allowedPeriods={['year', 'month', 'week', 'day', 'hour']}  />
             </IonItem>
           </IonList>
         </IonContent>

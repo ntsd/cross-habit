@@ -18,12 +18,17 @@ import { checkbox, accessibility, cog, calendar } from "ionicons/icons";
 
 import TasksPage from "./pages/TasksPage";
 import HabitsPage from "./pages/HabitsPage";
-import SettingPage from "./pages/SettingPage";
+import SettingsPage from "./pages/SettingsPage";
 import { PageProps } from "./pages/PageProps";
 import { LocalNotifications } from "@capacitor/local-notifications";
-import { RecoilRoot } from "recoil";
+import { RecoilRoot, useRecoilState } from "recoil";
 import CalendarPage from "./pages/CalendarPage";
-import { registerNotificationActionTypes, requestNotificationPermission } from "./lib/localnotification";
+import {
+	listenNotificationReceived,
+  registerNotificationActionTypes,
+  requestNotificationPermission,
+} from "./lib/localnotification";
+import { settingsState } from "./stores/settingsStore";
 
 const tabs: {
   title: string;
@@ -43,28 +48,29 @@ const tabs: {
     path: "habits",
     icon: accessibility,
   },
-	{
+  {
     title: "Calendar",
     component: CalendarPage,
     path: "calendar",
     icon: calendar,
   },
   {
-    title: "Setting",
-    component: SettingPage,
-    path: "setting",
+    title: "Settings",
+    component: SettingsPage,
+    path: "settings",
     icon: cog,
   },
 ];
 
 const App: React.FC = () => {
-	requestNotificationPermission();
+  const [setting, setSetting] = useRecoilState(settingsState);
 
-	registerNotificationActionTypes();
+  requestNotificationPermission();
+	listenNotificationReceived();
+  registerNotificationActionTypes();
 
   return (
-    <RecoilRoot>
-      <IonApp>
+      <IonApp className={`${setting.darkMode ? "dark-theme" : ""}`}>
         <IonReactRouter>
           <IonTabs>
             <IonRouterOutlet>
@@ -94,7 +100,6 @@ const App: React.FC = () => {
           </IonTabs>
         </IonReactRouter>
       </IonApp>
-    </RecoilRoot>
   );
 };
 export default App;

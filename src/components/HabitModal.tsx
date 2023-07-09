@@ -22,7 +22,8 @@ import ScheduleModal from "./ScheduleModal";
 import { monthsMap, scheduleEveryList, weekDaysMap } from "../consts";
 import { Weekday } from "@capacitor/local-notifications";
 import { timeFormat } from "../utils/time";
-import { addNotification } from "../lib/localnotification";
+import { addNotifications } from "../lib/localnotification";
+import { randSeedRange } from "../utils/randseed";
 
 interface HabitModalProps {
   habit?: Habit;
@@ -78,9 +79,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
 
     console.log("add notifications");
 
-		newHabit.schedules.forEach(schedules => {
-			addNotification(schedules).then((result) => console.log(result));
-		})
+    addNotifications(newHabit).then((result) => console.log(result));
   };
 
   const deleteHabit = () => {
@@ -162,6 +161,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
                     index={index}
                     value={schedule}
                     update={schedulesUpdate}
+                    remove={schedulesRemove}
                   >
                     <div className="flex gap-2">
                       <div>Every {schedule.every}</div>
