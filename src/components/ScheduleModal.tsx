@@ -27,7 +27,7 @@ import { monthsMap, scheduleEveryList, weekDaysMap } from "../consts";
 import { v4 as uuid } from "uuid";
 import { randSeedRange } from "../utils/randseed";
 import { Cron } from "react-js-cron";
-import 'react-js-cron/dist/styles.css'
+import "react-js-cron/dist/styles.css";
 
 interface ScheduleModalProps {
   children: JSX.Element;
@@ -47,43 +47,29 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
   append,
   remove,
 }) => {
-  const [cron, setCron] = useState("0 * * * *");
-
   const id = uuid();
   const defaultSchedule = value || {
     id: id,
-    notificationId: randSeedRange(id, -2147483647, 2147483647),
-    every: "hour",
-    on: {
-      month: 1,
-      weekday: 1,
-      day: 1,
-      hour: 0,
-      minute: 0,
-      second: 0,
-    },
-    repeats: true,
+    corn: "0 * * * *",
   };
 
-  const { register, handleSubmit, setValue } = useForm({
-    defaultValues: defaultSchedule,
-  });
+  const [cron, setCron] = useState(defaultSchedule.corn);
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const [scheduleEvery, setScheduleEvery] = useState(
-    defaultSchedule.every || "hour"
-  );
-
-  const onSave: SubmitHandler<FieldArrayWithId<Habit, "schedules", "id">> = (
-    data
-  ) => {
+  const onSave = () => {
     if (update && index !== undefined) {
-      update(index, data);
+      update(index, {
+        id: id,
+        corn: cron,
+      });
     }
 
     if (append) {
-      append(data);
+      append({
+        id: id,
+        corn: cron,
+      });
     }
 
     setIsOpen(false);
@@ -113,119 +99,19 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             </IonButtons>
             <IonTitle>{"Schedule"}</IonTitle>
             <IonButtons slot="end">
-              <IonButton
-                onClick={handleSubmit(onSave)}
-                strong={true}
-                type="submit"
-              >
+              <IonButton onClick={() => onSave()} strong={true} type="submit">
                 Save
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="h-screen">
+        <IonContent>
           <IonList>
-            <IonItem lines="inset">
-              <IonSelect
-                label="Every"
-                interface="popover"
-                onIonChange={(e) => setScheduleEvery(e.target.value)}
-                {...register(`every`, {
-                  required: "Schedule every is required",
-                })}
-              >
-                {scheduleEveryList.map((option, index) => (
-                  <IonSelectOption value={option} key={index}>
-                    {option}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </IonItem>
             <IonItem lines="none">
-              <IonLabel>On</IonLabel>
-            </IonItem>
-            {scheduleEveryList.indexOf(scheduleEvery) > 4 && (
-              <IonItem lines="none">
-                <IonSelect
-                  label="Month"
-                  interface="popover"
-                  {...register(`on.month`, {
-                    max: 12,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                >
-                  {Object.entries(monthsMap).map((month, index) => (
-                    <IonSelectOption value={month[1]} key={index}>
-                      {month[0]}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-            )}
-            {scheduleEveryList.indexOf(scheduleEvery) > 2 && (
-              <IonItem lines="none">
-                <IonInput
-                  label="Day"
-                  labelPlacement="floating"
-                  type="number"
-                  max={31}
-                  min={1}
-                  {...register(`on.day`, {
-                    max: 31,
-                    min: 1,
-                    valueAsNumber: true,
-                  })}
-                />
-              </IonItem>
-            )}
-            {scheduleEveryList.indexOf(scheduleEvery) === 2 && (
-              <IonItem lines="none">
-                <IonSelect
-                  label="Weekday"
-                  interface="popover"
-                  {...register(`on.weekday`, {
-                    max: 6,
-                    min: 0,
-                    valueAsNumber: true,
-                  })}
-                >
-                  {Object.entries(weekDaysMap).map((day, index) => (
-                    <IonSelectOption value={day[1]} key={index}>
-                      {day[0]}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-            )}
-            {scheduleEveryList.indexOf(scheduleEvery) > 0 && (
-              <IonItem lines="none">
-                <IonInput
-                  label="Hour"
-                  labelPlacement="floating"
-                  type="number"
-                  max={23}
-                  min={0}
-                  {...register(`on.hour`, {
-                    max: 23,
-                    min: 0,
-                    valueAsNumber: true,
-                  })}
-                />
-              </IonItem>
-            )}
-            <IonItem lines="none">
-              <IonInput
-                label="Minute"
-                labelPlacement="floating"
-                type="number"
-                max={59}
-                min={0}
-                {...register(`on.minute`, {
-                  max: 59,
-                  min: 0,
-                  valueAsNumber: true,
-                })}
+              <Cron
+                value={cron}
+                setValue={setCron}
+                allowedPeriods={["year", "month", "week", "day", "hour"]}
               />
             </IonItem>
             {value && (
@@ -240,9 +126,6 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 </IonButton>
               </IonItem>
             )}
-            <IonItem>
-              <Cron value={cron} setValue={setCron} allowedPeriods={['year', 'month', 'week', 'day', 'hour']}  />
-            </IonItem>
           </IonList>
         </IonContent>
       </IonModal>

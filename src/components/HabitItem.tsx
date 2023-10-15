@@ -50,7 +50,7 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
 
   return (
     <IonItemSliding>
-      <HabitModal habit={habit}>
+      <HabitModal habit={habit} isNew={false}>
         <IonItem detail={true}>
           <IonLabel>
             <h3>{habit.title}</h3>

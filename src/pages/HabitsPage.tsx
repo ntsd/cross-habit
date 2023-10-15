@@ -3,16 +3,11 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonFab,
-  IonFabButton,
   IonHeader,
-  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-
-import { add } from "ionicons/icons";
 import HabitModal from "../components/HabitModal";
 import { PageProps } from "./PageProps";
 import HabitList from "../components/HabitList";
@@ -24,7 +19,7 @@ const HabitsPage: React.FC<PageProps> = () => {
         <IonToolbar>
           <IonTitle>Habits</IonTitle>
           <IonButtons slot="end">
-            <HabitModal>
+            <HabitModal isNew={true}>
               <IonButton strong={true} type="submit">
                 New
               </IonButton>

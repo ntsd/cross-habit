@@ -4,17 +4,27 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonInput,
   IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
   IonLabel,
   IonList,
   IonModal,
   IonTitle,
+  IonToggle,
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
 import { Habit } from "../types";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { habitsState } from "../stores/habitStore";
 import { v4 as uuid } from "uuid";
@@ -24,13 +34,23 @@ import { Weekday } from "@capacitor/local-notifications";
 import { timeFormat } from "../utils/time";
 import { addNotifications } from "../lib/localnotification";
 import { randSeedRange } from "../utils/randseed";
+import { Cron } from "react-js-cron";
+import { notifications } from "ionicons/icons";
 
 interface HabitModalProps {
+  isNew: boolean;
   habit?: Habit;
   children: JSX.Element;
 }
 
-const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
+const HabitModal: React.FC<HabitModalProps> = ({ isNew, habit, children }) => {
+  const defaultHabit = habit || {
+    id: uuid(),
+    tags: [],
+    schedules: [],
+    isNotification: true,
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [habits, setHabits] = useRecoilState(habitsState);
   const {
@@ -41,11 +61,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
     getValues,
     formState: { errors },
   } = useForm<Habit>({
-    defaultValues: habit || {
-      id: uuid(),
-      tags: [],
-      schedules: [],
-    },
+    defaultValues: defaultHabit,
   });
   const {
     fields: schedules,
@@ -67,17 +83,18 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
       priority: data.priority,
       schedules: data.schedules,
       tags: data.tags,
+      isNotification: data.isNotification,
     };
+
+    console.log("add newHabit", newHabit);
 
     setHabits({ ...habits, [newHabit.id]: newHabit });
 
-    if (!habit) {
+    if (isNew) {
       reset();
     }
 
     setIsOpen(false);
-
-    console.log("add notifications");
 
     addNotifications(newHabit).then((result) => console.log(result));
   };
@@ -96,7 +113,7 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
       ],
       onWillDismiss: (ev) => {
         if (ev.detail.role === "confirm") {
-          if (habit) {
+          if (!isNew && habit) {
             setHabits((habits) => {
               const copy = { ...habits };
               delete copy[habit.id];
@@ -113,6 +130,12 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
     <>
       <span
         onClick={() => {
+          if (isNew) {
+            reset({
+              ...defaultHabit,
+              id: uuid(), // new id
+            });
+          }
           setIsOpen(true);
         }}
       >
@@ -135,82 +158,73 @@ const HabitModal: React.FC<HabitModalProps> = ({ habit, children }) => {
           </IonHeader>
           <IonContent className="h-screen">
             <IonList>
-              <IonItem lines="inset">
+              <IonItem lines="full">
                 <IonInput
                   labelPlacement="floating"
                   label="Name"
                   {...register("title", { required: "Title is required." })}
                 ></IonInput>
               </IonItem>
-              <IonItem lines="inset">
+              <IonItem lines="full">
                 <IonInput
                   labelPlacement="floating"
                   label="Description"
                   {...register("description")}
                 ></IonInput>
               </IonItem>
+              <IonItem lines="full">
+                <Controller
+                  control={control}
+                  name="isNotification"
+                  defaultValue={true}
+                  render={({ field: { onChange, value } }) => (
+                    <IonToggle
+                      checked={value}
+                      onClick={(event) => {
+												// simulate event target value for onChange												
+                        const newEvent = Object.defineProperty(event, "target", {
+                          writable: false,
+                          value: {
+                            value: !value, // toggle true/falase
+                          },
+                        });
+                        onChange(newEvent);
+                      }}
+                    >
+                      Reminder
+                    </IonToggle>
+                  )}
+                />
+              </IonItem>
               <IonItem lines="none">
-                <IonLabel>Schedule</IonLabel>
+                <IonLabel>Schedules</IonLabel>
                 <ScheduleModal append={schedulesAppend}>
                   <IonButton>Add</IonButton>
                 </ScheduleModal>
               </IonItem>
               {schedules.map((schedule, index) => (
-                <IonItem lines="none" key={schedule.id}>
+                <IonItem
+                  lines={schedules.length === index + 1 ? "full" : "inset"}
+                  key={schedule.id}
+                >
                   <ScheduleModal
                     index={index}
                     value={schedule}
                     update={schedulesUpdate}
                     remove={schedulesRemove}
                   >
-                    <div className="flex gap-2">
-                      <div>Every {schedule.every}</div>
-                      {schedule.every === "hour" && (
-                        <div>On Minute {schedule.on?.minute}</div>
-                      )}
-                      {schedule.every === "day" && (
-                        <div>
-                          On{" "}
-                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}
-                        </div>
-                      )}
-                      {schedule.every === "week" && (
-                        <div>
-                          On{" "}
-                          {Object.keys(weekDaysMap).find((k) => {
-                            return (
-                              weekDaysMap[k as keyof typeof weekDaysMap] ===
-                              schedule.on?.weekday
-                            );
-                          })}{" "}
-                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
-                        </div>
-                      )}
-                      {(schedule.every === "two-weeks" ||
-                        schedule.every === "month") && (
-                        <div>
-                          On Day {schedule.on?.day}{" "}
-                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
-                        </div>
-                      )}
-                      {schedule.every === "year" && (
-                        <div>
-                          On{" "}
-                          {Object.keys(monthsMap).find((k) => {
-                            return (
-                              monthsMap[k as keyof typeof monthsMap] ===
-                              schedule.on?.month
-                            );
-                          })}{" "}
-                          Day {schedule.on?.day}{" "}
-                          {timeFormat(schedule.on?.hour, schedule.on?.minute)}{" "}
-                        </div>
-                      )}
-                    </div>
+                    <Cron
+                      value={schedule.corn}
+                      setValue={() => {}}
+                      clearButton={false}
+                      humanizeLabels={false}
+                      readOnly={true}
+                      className="text-xs pt-2"
+                    ></Cron>
                   </ScheduleModal>
                 </IonItem>
               ))}
-              {habit && (
+              {!isNew && (
                 <IonItem lines="none">
                   <IonButton
                     onClick={() => {

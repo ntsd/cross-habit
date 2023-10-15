@@ -20,7 +20,7 @@ const HabitList: React.FC = () => {
         placeholder="Search"
         onIonInput={(e: CustomEvent) => {}}
       ></IonSearchbar>
-      <IonList>
+      <IonList lines="full">
         {Object.values(habits).map((habit: Habit) => (
           <HabitItem habit={habit} key={habit.id} />
         ))}
